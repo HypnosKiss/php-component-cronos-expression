@@ -13,11 +13,18 @@ class Expression
     private $fields;
 
     /**
-     * @param FieldInterface[] $fields
+     * @var int
      */
-    public function __construct(array $fields)
+    private $iterations;
+
+    /**
+     * @param FieldInterface[] $fields
+     * @param int              $iterations
+     */
+    public function __construct(array $fields, int $iterations = 1000)
     {
-        $this->fields = $fields;
+        $this->fields     = $fields;
+        $this->iterations = $iterations;
     }
 
     /**
@@ -85,7 +92,7 @@ class Expression
     {
         $runDate = clone $currentDate;
 
-        for ($i = 0; $i < 1000; $i++) {
+        for ($i = 0; $i < $this->iterations; $i++) {
             foreach ($this->fields as $field) {
                 if (!$field->match($runDate)) {
                     if ($forward) {
@@ -111,7 +118,7 @@ class Expression
         }
 
         // @codeCoverageIgnoreStart
-        throw new \RuntimeException('Impossible CRON expression');
+        throw new \RuntimeException('Impossible CRON expression: ' . $this);
         // @codeCoverageIgnoreEnd
     }
 

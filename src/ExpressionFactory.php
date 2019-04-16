@@ -17,9 +17,15 @@ class ExpressionFactory
     private $fieldFactories = [];
 
     /**
-     * @param FieldFactoryInterface[]
+     * @var int
      */
-    public function __construct(array $fieldFactories = [])
+    private $iterations;
+
+    /**
+     * @param FieldFactoryInterface[] $fieldFactories
+     * @param int                     $iterations
+     */
+    public function __construct(array $fieldFactories = [], int $iterations = 1000)
     {
         if (empty($fieldFactories)) {
             $fieldFactories = [
@@ -34,6 +40,8 @@ class ExpressionFactory
         foreach ($fieldFactories as $fieldFactory) {
             $this->addFieldFactory($fieldFactory);
         }
+
+        $this->iterations = $iterations;
     }
 
     /**
@@ -111,7 +119,7 @@ class ExpressionFactory
             $fields[] = $fieldFactory->createField($values, $each, $part);
         }
 
-        return new Expression($fields);
+        return new Expression($fields, $this->iterations);
     }
 
     /**
