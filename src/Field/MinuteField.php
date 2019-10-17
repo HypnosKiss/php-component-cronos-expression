@@ -17,7 +17,26 @@ class MinuteField extends AbstractField
      */
     public function decrement(\DateTime $dateTime)
     {
-        $dateTime->modify('-1 minute');
+        if ($this->each) {
+            $dateTime->modify('-1 minute');
+        } else {
+            $current  = $dateTime->format('i');
+            $position = count($this->values) - 1;
+
+            for ($i = count($this->values) - 1; $i > 0; $i--) {
+                if ($current <= $this->values[$i] && $current > $this->values[$i - 1]) {
+                    $position = $i - 1;
+                    break;
+                }
+            }
+
+            if ($current <= $this->values[$position]) {
+                $dateTime->modify('- 1 hour');
+                $dateTime->setTime($dateTime->format('H'), 59);
+            } else {
+                $dateTime->setTime($dateTime->format('H'), $this->values[$position]);
+            }
+        }
     }
 
     /**
@@ -25,6 +44,25 @@ class MinuteField extends AbstractField
      */
     public function increment(\DateTime $dateTime)
     {
-        $dateTime->modify('+1 minute');
+        if ($this->each) {
+            $dateTime->modify('+1 minute');
+        } else {
+            $current  = $dateTime->format('i');
+            $position = 0;
+
+            for ($i = 0; $i < count($this->values) - 1; $i++) {
+                if ($current >= $this->values[$i] && $current < $this->values[$i + 1]) {
+                    $position = $i + 1;
+                    break;
+                }
+            }
+
+            if ($current >= $this->values[$position]) {
+                $dateTime->modify('+ 1 hour');
+                $dateTime->setTime($dateTime->format('H'), 0);
+            } else {
+                $dateTime->setTime($dateTime->format('H'), $this->values[$position]);
+            }
+        }
     }
 }

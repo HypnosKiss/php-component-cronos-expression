@@ -92,8 +92,10 @@ class Expression
     {
         $runDate = clone $currentDate;
 
+        $fields = array_reverse($this->fields);
+
         for ($i = 0; $i < $this->iterations; $i++) {
-            foreach ($this->fields as $field) {
+            foreach ($fields as $field) {
                 if (!$field->match($runDate)) {
                     if ($forward) {
                         $field->increment($runDate);
