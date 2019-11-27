@@ -96,7 +96,7 @@ class ExpressionFactory
                             $values,
                             ...$fieldFactory->resolveRangeValues((int) $matches[1], (int) $matches[2])
                         );
-                    } else if (preg_match('/^(\d+)\/(\d+)$/', $element, $matches)) {
+                    } else if (preg_match('/^(\d+|\*)\/(\d+)$/', $element, $matches)) {
                         array_push(
                             $values,
                             ...$fieldFactory->resolveIncrementValues((int) $matches[1], (int) $matches[2])
